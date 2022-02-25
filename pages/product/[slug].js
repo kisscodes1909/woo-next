@@ -80,7 +80,7 @@ export async function getStaticProps(context) {
 export async function getStaticPaths () {
     const { data } = await client.query({
         query: PRODUCT_SLUGS
-    })
+    });
 
     const pathsData = []
 
