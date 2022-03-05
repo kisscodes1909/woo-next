@@ -1,41 +1,50 @@
-/**
- * Internal Dependencies.
- */
-import Products from '../src/components/products';
-import { HEADER_FOOTER_ENDPOINT } from '../src/utils/constants/endpoints';
+import Layout from "../src/components/Layout";
+import Product from "../src/components/Product";
+import client from '../src/components/ApolloClient';
+import ParentCategoriesBlock from "../src/components/category/category-block/ParentCategoriesBlock";
+import PRODUCTS_AND_CATEGORIES_QUERY from "../src/queries/product-and-categories";
+import HeroCarousel from "../src/components/home/hero-carousel";
 
-/**
- * External Dependencies.
- */
-import axios from 'axios';
-import { getProductsData } from '../src/utils/products';
-import Layout from '../src/components/layout';
+export default function Home (props) {
 
-export default function Home({ headerFooter, products }) {
-	
+	const { products, productCategories, heroCarousel } = props || {};
+
 	return (
-		<Layout headerFooter={headerFooter || {}}>
-			<Products products={products}/>
-		</Layout>
-	)
-}
+			<Layout>
+				{/*Hero Carousel*/}
+				<HeroCarousel heroCarousel={heroCarousel}/>
+				{/*Categories*/ }
+				<div className="product-categories-container container mx-auto my-32 px-4 xl:px-0">
+					<h2 className="main-title text-xl mb-5 uppercase"><span className="main-title-inner">Categories</span></h2>
+					<ParentCategoriesBlock productCategories={ productCategories }/>
+				</div>
+				{/*Products*/ }
+				<div className="products container mx-auto my-32 px-4 xl:px-0">
+					<h2 className="products-main-title main-title mb-5 text-xl uppercase"><span className="main-title-inner">Products</span></h2>
+					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
+						{ products.length ? (
+							products.map( product => <Product key={ product.id } product={ product }/> )
+						) : '' }
+					</div>
+				</div>
 
-export async function getStaticProps() {
-	
-	const { data: headerFooterData } = await axios.get( HEADER_FOOTER_ENDPOINT );
-	const { data: products } = await getProductsData();
-	
+			</Layout>
+	)
+};
+
+export async function getStaticProps () {
+
+	const { data } = await client.query( {
+		query: PRODUCTS_AND_CATEGORIES_QUERY,
+	} );
+
 	return {
 		props: {
-			headerFooter: headerFooterData?.data ?? {},
-			products: products ?? {}
+			productCategories: data?.productCategories?.nodes ? data.productCategories.nodes : [],
+			products: data?.products?.nodes ? data.products.nodes : [],
+			heroCarousel: data?.heroCarousel?.nodes[0]?.children?.nodes ? data.heroCarousel.nodes[0].children.nodes : []
 		},
-		
-		/**
-		 * Revalidate means that if a new request comes to server, then every 1 sec it will check
-		 * if the data is changed, if it is changed then it will update the
-		 * static file inside .next folder with the new data, so that any 'SUBSEQUENT' requests should have updated data.
-		 */
-		revalidate: 1,
-	};
-}
+		revalidate: 1
+	}
+
+};
