@@ -1,28 +1,27 @@
 module.exports = {
-  // @see https://tailwindcss.com/docs/upcoming-changes
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
-  purge: [
-    './src/components/**/*.js',
-    './pages/**/*.js'],
-  theme: {
-    extend: {
-      height: {
-        'almost-screen': 'calc(-16rem + 100vh)',
-        '308px': '19.25rem',
-      },
-      width: {
-        '308px': '19.25rem',
-        '600px': '37.5rem',
-      },
-    },
-  },
-  variants: {},
-  plugins: [
-    require( 'tailwindcss' ),
-    require( 'precss' ),
-    require( 'autoprefixer' )
-  ]
+	purge: [
+		'./src/components/**/*.js',
+		'./pages/**/*.js'],
+	theme: {
+		extend: {
+			spacing: {
+				'11px': '11px'
+			},
+		},
+		container: {
+			padding: {
+				DEFAULT: '1rem',
+				md: '2rem',
+				lg: '4rem',
+				xl: '5rem',
+				'2xl': '6rem',
+			},
+		},
+	},
+	variants: {},
+	plugins: [
+		require( 'tailwindcss' ),
+		require( 'precss' ),
+		require( 'autoprefixer' )
+	]
 }
