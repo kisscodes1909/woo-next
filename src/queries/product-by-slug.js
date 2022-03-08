@@ -7,6 +7,7 @@ export const PRODUCT_BY_SLUG_QUERY = gql` query Product($slug: ID!) {
 	  averageRating
 	  slug
 	  description
+	  type
 	  galleryImages {
           nodes {
             id
@@ -29,9 +30,24 @@ export const PRODUCT_BY_SLUG_QUERY = gql` query Product($slug: ID!) {
 		regularPrice
 	  }
 	  ... on VariableProduct {
-		price
 		id
-		regularPrice
+		name
+		variations(where: {}) {
+		  edges {
+			node {
+			  id
+			  attributes {
+				nodes {
+				  attributeId
+				  id
+				  label
+				  name
+				  value
+				}
+			  }
+			}
+		  }
+		}
 	  }
 	  ... on ExternalProduct {
 		price
@@ -56,7 +72,7 @@ export const PRODUCT_BY_SLUG_QUERY = gql` query Product($slug: ID!) {
 `;
 
 export const PRODUCT_SLUGS = gql` query Products {
-  products(first: 5000) {
+  products(first: 10000, where: {status: "publish"}) {
     nodes {
       id
       slug

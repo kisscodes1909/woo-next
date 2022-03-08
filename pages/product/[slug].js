@@ -6,9 +6,12 @@ import {PRODUCT_BY_SLUG_QUERY, PRODUCT_SLUGS} from '../../src/queries/product-by
 import { isEmpty } from 'lodash';
 import GalleryCarousel from "../../src/components/single-product/gallery-carousel";
 import Price from "../../src/components/single-product/price";
+import Variation from '../../src/components/single-product/variations';
 
 export default function Product(props) {
-	const { product } = props;
+	const {product} = props;
+
+    const {type: type = 'SIMPLE'} = product || {};
 
     const router = useRouter()
 
@@ -17,6 +20,12 @@ export default function Product(props) {
     if (router.isFallback) {
         return <div>Loading...</div>
     }
+
+    // console.log(type);
+
+    //console.log(type);
+
+    //console.log(product);
 
 	return (
 		<Layout>
@@ -47,8 +56,12 @@ export default function Product(props) {
 								className="product-description mb-5"
 							/>
                             <Price salesPrice={product?.price} regularPrice={product?.regularPrice}/>
-							<AddToCartButton product={ product }/>
+
+                            {type == 'VARIABLE' && (<Variation product={product}  />)}
+
 						</div>
+                        
+        
 					</div>
 
 				</div>
@@ -67,7 +80,9 @@ export async function getStaticProps(context) {
     const {data} = await client.query({
         query: PRODUCT_BY_SLUG_QUERY,
         variables: { slug }
-    })
+    });
+
+    // console.log(data?.product.type);
 
     return {
         props: {
@@ -78,9 +93,10 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths () {
+
     const { data } = await client.query({
         query: PRODUCT_SLUGS
-    })
+    });
 
     const pathsData = []
 
