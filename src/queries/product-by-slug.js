@@ -32,10 +32,11 @@ export const PRODUCT_BY_SLUG_QUERY = gql` query Product($slug: ID!) {
 	  ... on VariableProduct {
 		id
 		name
-		variations(where: {}) {
+		variations {
 		  edges {
 			node {
 			  id
+			  databaseId
 			  attributes {
 				nodes {
 				  attributeId

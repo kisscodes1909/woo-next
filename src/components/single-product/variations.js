@@ -3,6 +3,8 @@ import { useState } from "react";
 import VariationDropdown from "./variation-dropdown";
 import AddToCartButton from "../cart/AddToCartButton";
 import { StockStatus } from "./stock-status";
+import client from "../ApolloClient";
+import { PRODUCT_VARIATION_GET_STOCK } from "../../queries/stock";
 
 const Variation = ({product}) => {
 
@@ -11,6 +13,8 @@ const Variation = ({product}) => {
 
     // Get Product attributes
     let {nodes: attributes} = variations[0].node.attributes;
+
+    //console.log(variations);
 
     //console.log(variations);
     
@@ -22,17 +26,25 @@ const Variation = ({product}) => {
 
 
     function formatVariations(variations) {
-        let allAttributes = [];
         return variations.map(variation => {
             return variation.node.attributes.nodes;
         })
     } 
+
+    // function formatAttributes(attributes) {
+    //     return attributes.map(attribute => {
+    //         console.log(attribute);
+    //         //return attribute.node.attributes.nodes
+    //     });
+    // }
 
     function filterVariation(variations, attrs) {
         return variations.filter((variation)=>{
             return hasMultipleAttr(variation, attrs);
         });
     }
+
+    console.log(variations);
 
 
     function hasMultipleAttr(variation, attrs) {
@@ -174,8 +186,9 @@ const Variation = ({product}) => {
 
     const [productAttributes, setAttributes] = useState(findAvailableAttributes(attributes, variations));
     const [selectedAttributes, setSelectedAttributes] = useState({});
+    const [stock, setStock] = useState('');
 
-    function VariationDropdownOnChange(evt) {
+    async function VariationDropdownOnChange(evt) {
 
         let currSelectAttrs = {...selectedAttributes};
 
@@ -188,7 +201,21 @@ const Variation = ({product}) => {
         setAttributes(newVariations);
 
         setSelectedAttributes(currSelectAttrs);
+
+        // if(Object.keys(currSelectAttrs).length == attributes.length) {
+        //     console.log('run');
+        // }
+
+
+        const { data } = await client.query({
+            query: PRODUCT_VARIATION_GET_STOCK,
+            variables: { variationId: 'cHJvZHVjdF92YXJpYXRpb246NjA3NzQ=' }
+        });
+
+        console.log(data);
     }
+
+
     
     function reset() {
         setAttributes(findAvailableAttributes(attributes, variations));
