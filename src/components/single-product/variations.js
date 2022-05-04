@@ -1,4 +1,4 @@
-import { find, uniq } from "lodash";
+import { find, merge, mergeWith, uniq, filter } from "lodash";
 import { useState } from "react";
 import VariationDropdown from "./variation-dropdown";
 import AddToCartButton from "../cart/AddToCartButton";
@@ -13,180 +13,78 @@ const Variation = ({product}) => {
 
     // Get Product attributes
     let {nodes: attributes} = variations[0].node.attributes;
-
-    //console.log(variations);
-
-    //console.log(variations);
     
-    //console.log(attributes);
+    // console.log(attributes);
 
     // console.log(variations);
 
-    // Collect attribute
 
-
-    function formatVariations(variations) {
+    function formatVariationData(variations) {
         return variations.map(variation => {
-            return variation.node.attributes.nodes;
-        })
-    } 
+            let propertyObject = {};
 
-    // function formatAttributes(attributes) {
-    //     return attributes.map(attribute => {
-    //         console.log(attribute);
-    //         //return attribute.node.attributes.nodes
-    //     });
-    // }
+            propertyObject['databaseId']  =  variation.node.databaseId;
 
-    function filterVariation(variations, attrs) {
-        return variations.filter((variation)=>{
-            return hasMultipleAttr(variation, attrs);
+            variation.node.attributes.nodes.forEach(attribute => {
+                propertyObject['attributes'] = merge(propertyObject['attributes'], {
+                    [attribute.name] : attribute.value
+                });
+            });
+
+            return propertyObject;
         });
     }
 
-    console.log(variations);
+    
+    function prepareStructureUIData(variations) {
+        if(variations.length < 1) return [];
+
+        let productAttributes = {};
+        let productUIData = [];
 
 
-    function hasMultipleAttr(variation, attrs) {
-        // attrs = [
-        //     {
-        //         name: 'pa_size',
-        //         value: 'Small'
-        //     },
-        //     {
-        //         name: 'pa_colour',
-        //         value: 'Blue'
-        //     },
-        // ];
+        // console.log('variation', variations);
 
-        let hasMultipleValue = true;
+        if(variations.length > 1) {
+            // Merge property values
+            variations.forEach(variation => {
+                productAttributes = mergeWith(productAttributes, variation['attributes']);
+                
+            });
 
-       // console.log(attrs);
+        } else {
+            Object.keys(variations[0]['attributes']).forEach(propKey => {
+                productAttributes[propKey] = [variations[0]['attributes'][propKey]];
+            });
+        }
 
-        // attrs.forEach(attr => {
-        //     const hasAttr = hasAttribute(variation, attr.name, attr.value);
+        console.log(productAttributes);
 
-        //     // console.log(hasAttr);
-
-        //     if(hasAttr === false) {
-        //         hasMultipleValue = false;
-        //         return hasMultipleValue;
-        //     }
-            
-        //     //if(!hasAttr) return;
-        // });
-        
-        for (const name in attrs) {
-            const hasAttr = hasAttribute(variation, name, attrs[name]);
-
-            if(hasAttr === false) {
-                hasMultipleValue = false;
-                return hasMultipleValue;
+        // Build product UI structure data
+        for (const prop in productAttributes) {
+            if (Object.hasOwnProperty.call(productAttributes, prop)) {
+                productUIData.push({
+                    name: prop,
+                    values: productAttributes[prop],
+                });
             }
         }
 
-        return hasMultipleValue;
+        return productUIData;
     }
 
+    // const newFormatData = ;
 
-    function hasAttribute(variation ,paName = 'pa_size', value="Small") {
-        let hasAttr = false;
+    //console.log(newFormatData);
+    // console.log(prepareStructureUIData(formatVariationData(variations)));
 
-        variation.forEach(attr => {
-            if(attr.name === paName && attr.value === value) {
-                hasAttr = true;
-                return hasAttr;
-            }
-        });
+    variations = formatVariationData(variations);
 
-        return hasAttr; 
-    }
-
-    // console.log(filterVariation(formatVariations(variations)));
-
-    variations = formatVariations(variations);
-
-    // variations = filterVariation(variations, {
-    //     pa_size: 'Small',
-    // });
-
-    // console.log
-
-    // console.log(variations);
-    
-    function findAvailableAttributes(attributes, variations) {
-
-        //console.log(variations);
-
-
-        attributes = attributes.map(attr => {
-
-            const id = attr.attributeId;
-            const attrName = attr.name;
-    
-    
-            //console.log(attr);
-                 
-            // Loop through variations
-
-            
-    
-            let values = variations.map(variation => {
-
-                //console.log(variation);
-
-                //console.log(variation);
-    
-                // console.log(variation.node.attributes);
-    
-                const matchAttribute = variation.filter(attr => {
-                    //console.log(attr);
-                    return attr.name === attrName;
-    
-                });
-    
-                return matchAttribute[0].value;
-    
-                // console.log(matchAttribute);
-                // console.log(matchAttribute);
-            });
-    
-    
-    
-            // Unique values
-            values = uniq(values);
-    
-            //console.log(values);
-    
-            return {
-                id,
-                values,
-                name: attr.name,
-                label: attr.label
-            }
-        });
-
-        // console.log(attributes);
-
-        return attributes;
-    }
-
-
-    // [
-    //     {
-    //         id: 'x',
-    //         label: 'Label',
-    //         values: [1, 2, 3, 4]
-    //     }
-    // ]
-    
-    
-    // console.log();
-
-
-    const [productAttributes, setAttributes] = useState(findAvailableAttributes(attributes, variations));
+    const [productAttributes, setAttributes] = useState(prepareStructureUIData(variations));
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [stock, setStock] = useState('');
+
+
 
     async function VariationDropdownOnChange(evt) {
 
@@ -194,39 +92,54 @@ const Variation = ({product}) => {
 
         currSelectAttrs[evt.target.className] = evt.target.value;
 
-        let newVariations = filterVariation(variations, currSelectAttrs);
-
-        newVariations = findAvailableAttributes(attributes, newVariations);
-
-        setAttributes(newVariations);
-
         setSelectedAttributes(currSelectAttrs);
+
+        let newVariations = filter(variations, {attributes: currSelectAttrs});
+        let newAttributes = prepareStructureUIData(newVariations);
+
+        setAttributes(newAttributes);
 
         // if(Object.keys(currSelectAttrs).length == attributes.length) {
         //     console.log('run');
         // }
 
 
-        const { data } = await client.query({
-            query: PRODUCT_VARIATION_GET_STOCK,
-            variables: { variationId: 'cHJvZHVjdF92YXJpYXRpb246NjA3NzQ=' }
-        });
+        // const { data } = await client.query({
+        //     query: PRODUCT_VARIATION_GET_STOCK,
+        //     variables: { variationId: 'cHJvZHVjdF92YXJpYXRpb246NjA3NzQ=' }
+        // });
 
-        console.log(data);
+        // console.log(data);
     }
 
+    let variationDropdowns = [];
+
+    for (const prop in productAttributes) {
+        variationDropdowns.push(
+            <VariationDropdown 
+                attribute={productAttributes[prop]} 
+                onChange={VariationDropdownOnChange}
+                selectedAttributes={selectedAttributes}
+                key={prop}
+            />
+        )
+    }
 
     
     function reset() {
-        setAttributes(findAvailableAttributes(attributes, variations));
+        setAttributes(prepareStructureUIData(variations));
         setSelectedAttributes({});
     }
+
+    // console.log(productAttributes);
     
     return (
         <div>
+
+            {/* {variationDropdowns} */}
             
             {productAttributes.map((attr, key) => {
-            return <VariationDropdown attribute={attr} 
+                return <VariationDropdown attribute={attr} 
                     // setSelectedAttributes={setSelectedAttributes}  
                     // selectedAttributes={selectedAttributes}
                     onChange={VariationDropdownOnChange}

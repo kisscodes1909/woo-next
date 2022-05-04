@@ -1,18 +1,14 @@
 const VariationDropdown = ({attribute, onChange, selectedAttributes}) =>{
     
-    const id = attribute.id;
     const paName = attribute.name;
 
     //console.log(attribute);
 
     function handleOnChange(evt) {
-        // let currSelectAttrs = {...selectedAttributes};
-
-        // currSelectAttrs[evt.target.className] = evt.target.value;
-
-        // setSelectedAttributes(currSelectAttrs);
         onChange(evt);
     }
+
+    // console.log(attribute);
 
     return (
         <div className="flex">
@@ -20,12 +16,12 @@ const VariationDropdown = ({attribute, onChange, selectedAttributes}) =>{
             {attribute.values.map((val, i, attr)=> {
                 //console.log(selectedAttributes);
                 return (
-                    <div key={i} class='mb-3'>
-                        <label className='ml-3' htmlFor={`${paName}_${id}`}>{val}</label>
+                    <div key={i} className='mb-3'>
+                        <label className='ml-3' htmlFor={`${paName}`}>{val}</label>
                         <input
                             className={`${paName}`} 
-                            name={`${paName}_${id}`} 
-                            id={`${paName}_${id}`} 
+                            name={`${paName}`} 
+                            id={`${paName}`} 
                             value={val} 
                             type="radio"
                             onChange={ (evt) => handleOnChange(evt) }

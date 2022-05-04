@@ -1,0 +1,30 @@
+
+{
+	variationID1: {
+			property1:value,
+			property2:value,
+			property3:value
+		}
+	,
+	variationID2: {
+		{
+			property1:value,
+			property2:value,
+			property3:value
+		}
+	},
+	variationID3: {
+		{
+			property1:value,
+			property2:value,
+			property3:value
+		}
+	}
+}
+
+
+1. Cần xác định có những property nào
+2. Sau mỗi lần click sẻ fill property to destination
+3. Làm thế nào để tìm variationID => Use lodash findkey to solve issue
+
+Filter variation based property
