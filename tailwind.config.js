@@ -4,19 +4,24 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
     purgeLayersByDefault: true,
   },
-  purge: [
-    './src/components/**/*.js',
-    './pages/**/*.js'],
+  content: [
+    './src/components/**/*.{js,ts,jsx,tsx}',
+    './pages/**/*.{js,ts,jsx,tsx}'
+  ],
   theme: {
-    extend: {
-      height: {
-        'almost-screen': 'calc(-16rem + 100vh)',
-        '308px': '19.25rem',
-      },
-      width: {
-        '308px': '19.25rem',
-        '600px': '37.5rem',
-      },
+    screens: {
+      sm: '480px',
+      md: '768px',
+      lg: '992px',
+      xl: '1280px',
+      xxl: '1400px'
+    },
+    container: {
+      center: true,
+    },
+    fontFamily: {
+      sans: ['Lato', 'sans-serif'],
+      serif: ['Libre Baskerville', 'serif'],
     },
   },
   variants: {},

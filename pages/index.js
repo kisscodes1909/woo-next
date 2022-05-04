@@ -4,12 +4,18 @@ import client from '../src/components/ApolloClient';
 import ParentCategoriesBlock from "../src/components/category/category-block/ParentCategoriesBlock";
 import PRODUCTS_AND_CATEGORIES_QUERY from "../src/queries/product-and-categories";
 import HeroCarousel from "../src/components/home/hero-carousel";
+import Head from 'next/head'
 
 export default function Home (props) {
 
 	const { products, productCategories, heroCarousel } = props || {};
 
 	return (
+		<>
+	      	<Head>
+				<title>My page title</title>
+				<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+			</Head>
 			<Layout>
 				{/*Hero Carousel*/}
 				<HeroCarousel heroCarousel={heroCarousel}/>
@@ -27,8 +33,8 @@ export default function Home (props) {
 						) : '' }
 					</div>
 				</div>
-
 			</Layout>
+		</>
 	)
 };
 
