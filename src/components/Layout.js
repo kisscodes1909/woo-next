@@ -15,11 +15,9 @@ const Layout = (props) => {
   return (
     <AppProvider>
       <ApolloProvider client={client}>
-        <div className="container">
           <Header />
             {props.children}
           <Footer />
-        </div>
       </ApolloProvider>
     </AppProvider>
   );

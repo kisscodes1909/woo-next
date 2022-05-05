@@ -1,9 +1,6 @@
 module.exports = {
   // @see https://tailwindcss.com/docs/upcoming-changes
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
+  mode: 'jit',
   content: [
     './src/components/**/*.{js,ts,jsx,tsx}',
     './pages/**/*.{js,ts,jsx,tsx}'
