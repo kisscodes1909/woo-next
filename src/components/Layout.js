@@ -15,9 +15,11 @@ const Layout = (props) => {
   return (
     <AppProvider>
       <ApolloProvider client={client}>
-          <Header />
-            {props.children}
-          <Footer />
+            <Header />
+            <div className="max-w-screen-xxl mx-auto">
+              {props.children}
+            </div>
+            <Footer />
       </ApolloProvider>
     </AppProvider>
   );

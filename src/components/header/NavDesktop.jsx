@@ -193,10 +193,8 @@ const NavDesktop = () => {
         setMegaMenuData([])
     }
 
-    console.log(megaMenuData);
-
     return (
-        <nav className="sticky relative container w-full order-1 lg:order-2 hidden lg:flex items-center justify-center border-t border-b font-lato">
+        <nav className="px-4 max-w-screen-xxl mx-auto sticky relative order-1 lg:order-2 hidden lg:flex items-center justify-center border-t border-b font-lato">
             <ul className="flex items-center space-x-4 space-x-5">
                 {menuData.map(menuItem => <li
                     onMouseEnter={() => displaySubPanel(menuItem.id)}
@@ -216,10 +214,7 @@ const NavDesktop = () => {
                         }
                         
                 </li>)}    
-            </ul>
-
-
-                    
+            </ul>                    
         </nav>
     )
 }

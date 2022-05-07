@@ -3,10 +3,10 @@ import { SpeakerphoneIcon, XIcon } from '@heroicons/react/outline'
 export default function TopNav() {
     return (
       <div className="bg-pink-700">
-        <div className="container mx-auto py-2 px-2 sm:px-6 lg:px-8">
+        <div className="py-1 px-4 max-w-screen-xxl mx-auto">
           <div className="flex items-center justify-between flex-wrap">
             <div className="w-0 flex-1 flex items-center">
-              <span className="flex p-2 rounded-lg bg-pink-700">
+              <span className="flex p-1 rounded-lg bg-pink-700">
                 <SpeakerphoneIcon className="h-4 w-4 text-white" aria-hidden="true" />
               </span>
               <p className="ml-3 text-xs text-white truncate">
