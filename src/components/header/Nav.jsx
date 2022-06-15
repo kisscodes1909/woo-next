@@ -21,7 +21,9 @@ const Nav = () => {
 						<SearchBox />
 					</div>
 					<div className="col-span-1 text-center">
-						<Logo src="/images/sgb-logo.png" width={80} height={80}></Logo>
+						<Link href="/">
+							<a><Logo src="/images/sgb-logo.png" width={80} height={80}></Logo></a>
+						</Link>
 					</div>
 
 					<div className="flex justify-end text-xs col-span-1">

@@ -23,17 +23,16 @@ export default function Product(props) {
 
     // console.log(type);
 
-    //console.log(type);
+    console.log(type);
 
     //console.log(product);
 
 	return (
 		<Layout>
 			{ product ? (
-				<div className="single-product container mx-auto my-32 px-4 xl:px-0">
+				<div className="single-product container mx-auto px-4 xl:px-0">
 					<div className="grid md:grid-cols-2 gap-4">
 						<div className="product-images">
-
 							{ !isEmpty( product?.galleryImages?.nodes ) ? (
                                 <GalleryCarousel gallery={product?.galleryImages?.nodes}/>
 							) : !isEmpty( product.image ) ? (
@@ -55,15 +54,15 @@ export default function Product(props) {
 								} }
 								className="product-description mb-5"
 							/>
+
                             <Price salesPrice={product?.price} regularPrice={product?.regularPrice}/>
 
                             {type == 'VARIABLE' && (<Variation product={product}  />)}
 
-						</div>
-                        
-        
-					</div>
+                            <AddToCartButton product={product} />
 
+						</div>
+					</div>
 				</div>
 			) : (
 				''

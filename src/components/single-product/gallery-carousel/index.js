@@ -52,7 +52,7 @@ const GalleryCarousel = ({gallery}) => {
                     gallery.map( ( item, index ) => {
                         const opacity = ( activeIndex === index || 1 === gallery.length ) ? 'opacity-100' : 'opacity-0';
                         return (
-                            <div key={item?.id} className={`${opacity} banner-img-container absolute top-0 left-0`}>
+                            <div key={item?.id} className={`${opacity} banner-img-container top-0 left-0`}>
                                 <img
                                     src={item?.mediaItemUrl} loading="lazy" alt={ item?.altText ? item?.altText : item?.title }
                                 />
