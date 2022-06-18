@@ -23,7 +23,7 @@ export default function Product(props) {
 
     // console.log(type);
 
-    console.log(type);
+    //console.log(type);
 
     //console.log(product);
 

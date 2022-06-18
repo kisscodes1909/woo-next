@@ -1,4 +1,4 @@
-import { find, merge, mergeWith, uniq, filter } from "lodash";
+import { find, merge, mergeWith, uniq, filter, isArray } from "lodash";
 import { useState } from "react";
 import VariationDropdown from "./variation-dropdown";
 import AddToCartButton from "../cart/AddToCartButton";
@@ -13,11 +13,6 @@ const Variation = ({product}) => {
 
     // Get Product attributes
     let {nodes: attributes} = variations[0].node.attributes;
-    
-    // console.log(attributes);
-
-    // console.log(variations);
-
 
     function formatVariationData(variations) {
         return variations.map(variation => {
@@ -37,6 +32,8 @@ const Variation = ({product}) => {
 
     
     function prepareStructureUIData(variations) {
+        console.log(variations);
+
         if(variations.length < 1) return [];
 
         let productAttributes = {};
@@ -48,9 +45,13 @@ const Variation = ({product}) => {
         if(variations.length > 1) {
             // Merge property values
             variations.forEach(variation => {
-                productAttributes = mergeWith(productAttributes, variation['attributes']);
+                productAttributes = mergeWith(productAttributes, variation['attributes'], (objVal, srcVal) => {
+                    if(!isArray(objVal)) return [srcVal];
+                    if(isArray(objVal)) return objVal.concat(srcVal);
+                });
                 
             });
+
 
         } else {
             Object.keys(variations[0]['attributes']).forEach(propKey => {
@@ -58,14 +59,14 @@ const Variation = ({product}) => {
             });
         }
 
-        console.log(productAttributes);
+        // console.log(productAttributes);
 
         // Build product UI structure data
         for (const prop in productAttributes) {
             if (Object.hasOwnProperty.call(productAttributes, prop)) {
                 productUIData.push({
                     name: prop,
-                    values: productAttributes[prop],
+                    values: Array.isArray(productAttributes[prop]) ? productAttributes[prop] : [productAttributes[prop]],
                 });
             }
         }
@@ -131,7 +132,6 @@ const Variation = ({product}) => {
         setSelectedAttributes({});
     }
 
-    // console.log(productAttributes);
     
     return (
         <div>
@@ -139,6 +139,7 @@ const Variation = ({product}) => {
             {/* {variationDropdowns} */}
             
             {productAttributes.map((attr, key) => {
+                //console.log(attr);
                 return <VariationDropdown attribute={attr} 
                     // setSelectedAttributes={setSelectedAttributes}  
                     // selectedAttributes={selectedAttributes}
